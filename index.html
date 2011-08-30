@@ -3,8 +3,69 @@
 <head>
     <title>My offline web application</title>
     <link rel="StyleSheet" type="text/css" href="style.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {//debugger;
+        $(document.body).bind("online", checkNetworkStatus);
+        $(document.body).bind("offline", checkNetworkStatus);
+        checkNetworkStatus();
+    });
+
+    function checkNetworkStatus() {
+        console.log('I am checking');
+        if (navigator.onLine) {
+            // Just because the browser says we're online doesn't mean we're online. The browser lies.
+            // Check to see if we are really online by making a call for a static JSON resource on
+            // the originating Web site. If we can get to it, we're online. If not, assume we're
+            // offline.
+            $.ajaxSetup({
+                async: true,
+                cache: false,
+                context: $("#status"),
+                dataType: "json",
+                error: function (req, status, ex) {
+                    console.log("Error: " + ex);
+                    // We might not be technically "offline" if the error is not a timeout, but
+                    // otherwise we're getting some sort of error when we shouldn't, so we're
+                    // going to treat it as if we're offline.
+                    // Note: This might not be totally correct if the error is because the
+                    // manifest is ill-formed.
+                    showNetworkStatus(false);
+                },
+                success: function (data, status, req) {
+                    showNetworkStatus(true);
+                },
+                timeout: 5000,
+                type: "GET",
+                url: "ping.js"
+            });
+            $.ajax();
+        }
+        else {
+            showNetworkStatus(false);
+        }
+    }
+    
+    var currently_online = null;
+    function showNetworkStatus(online) {
+        if (online != currently_online) {
+            if (online) {
+                $("#online_status").html("Online");
+                $('#news').load('/news.php', function (response) {
+                    localStorage.setItem('news', response);
+                });
+            } else {
+                $("#online_status").html("Offline");
+                $('#news').html(localStorage.getItem('news'));
+            }
+            currently_online = online;
+        }
+    }
+    </script>
 </head>
 <body>
-<p>Hello, world</p>
+<p>Hello, world!</p>
+<div id="news"></div>
+<div id="online_status"></div>
 </body>
 </html>

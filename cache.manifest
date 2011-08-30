@@ -1,2 +1,7 @@
 CACHE MANIFEST
+NETWORK:
+/news.php
+/ping.js
+CACHE:
 /style.css
+http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js
