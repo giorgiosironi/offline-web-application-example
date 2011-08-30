@@ -5,7 +5,7 @@
     <link rel="StyleSheet" type="text/css" href="style.css" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script type="text/javascript">
-    $(document).ready(function () {//debugger;
+    $(document).ready(function () {
         $(document.body).bind("online", checkNetworkStatus);
         $(document.body).bind("offline", checkNetworkStatus);
         checkNetworkStatus();
@@ -40,15 +40,14 @@
                 url: "ping.js"
             });
             $.ajax();
-        }
-        else {
+        } else {
             showNetworkStatus(false);
         }
     }
     
-    var currently_online = null;
+    var currentlyOnline = null;
     function showNetworkStatus(online) {
-        if (online != currently_online) {
+        if (online != currentlyOnline) {
             if (online) {
                 $("#online_status").html("Online");
                 $('#news').load('/news.php', function (response) {
@@ -58,7 +57,7 @@
                 $("#online_status").html("Offline");
                 $('#news').html(localStorage.getItem('news'));
             }
-            currently_online = online;
+            currentlyOnline = online;
         }
     }
     </script>
